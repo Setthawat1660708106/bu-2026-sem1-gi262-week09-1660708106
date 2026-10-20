@@ -19,13 +19,27 @@ namespace Solution
         {
             // Only push a state if it's different from the last saved state 
             // (optional optimization, but good practice for movement)
+            undoStack.Push(currentPosition);
+            redoStack.Clear();
         
         }
         /// Reverts the player's state to the previous one using the undo stack.
         /// </summary>
         public void UndoLastMove(OOPPlayer player)
         {
+            if (undoStack.Count == 0)
+            {
+                return;
+            }
             // Need at least two states: the current one, and the one to revert to.
+
+            var p = undoStack.Pop();
+            redoStack.Push(p);
+            undoStack.Pop();
+            var prevPosition = undoStack.Pop();
+            player.UpdatePosition((int)prevPosition.x, (int)prevPosition.y);
+
+            
            
         }
         public void RedoLastMove(OOPPlayer player)
