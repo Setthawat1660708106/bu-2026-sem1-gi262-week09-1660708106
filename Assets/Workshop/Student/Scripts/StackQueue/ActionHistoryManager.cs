@@ -45,7 +45,14 @@ namespace Solution
         public void RedoLastMove(OOPPlayer player)
         {
             // Need at least two states: the current one, and the one to revert to.
-
+            if (redoStack.Count == 0)
+            {
+                return;
+            }
+            // Need at least two states: the current one, and the one to revert to.
+            var p = redoStack.Pop();
+            undoStack.Push(p);
+            player.UpdatePosition((int)p.x, (int)p.y);
         }
         #endregion
 
@@ -57,6 +64,15 @@ namespace Solution
             // 1. prepare the Queue with the sequence of moves
 
             // Start the coroutine to process the auto-move sequence
+            Vector2[] moves = new Vector2[]
+            {
+                Vector2.right,Vector2.right,Vector2.up,Vector2.left,Vector2.up,Vector2.down,
+                
+                
+                
+                
+                
+            };
             StartCoroutine(ProcessAutoMoveSequence(player));
         }
         public IEnumerator ProcessAutoMoveSequence(OOPPlayer player)
@@ -67,8 +83,16 @@ namespace Solution
             // 2. process the Queue step-by-step
             yield return new WaitForSeconds(0.5f); // Initial delay before starting
 
-            player.isAutoMoving = false;
-            Debug.Log("Auto-move sequence finished.");
+            while (true)
+            {
+                var dir = autoMoveQueue.Dequeue();
+                player.Move(dir);
+                yield return new WaitForSeconds(0.5f);
+
+
+                player.isAutoMoving = false;
+                Debug.Log("Auto-move sequence finished.");
+            }
         }
 
         #endregion
